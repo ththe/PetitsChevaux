@@ -1,0 +1,188 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "Action_chevaux.h"
+#include "Affichage.h"
+#include "petitchevaux.h"
+#include "Verification.h"
+#include "Deroulement.h"
+
+
+
+int verification_pion(int plateau[][15], chevaux chevaux[], int i, int j){
+  int d=0;
+  for(couleur_e k=JAUNE; k<=VERT; k++){
+    for(numero_e l=UN; l<=QUATRE; l++){
+      if(plateau[i][j]==chevaux[k*4+l].position && chevaux[k*4+l].position>=0){
+	d=1;
+      }
+    }
+   }
+  return d;
+}
+
+
+int deplacement_possible(int couleur, chevaux chevaux[],int des){
+  int possible=0;
+   for(int i=1; i<=4;i++){
+    if(couleur==1){
+      if(chevaux[i-1].position>=0 && pion_sur_le_chemin(chevaux,couleur,des,i-1)!=1){
+	possible=1;
+      }
+    }
+    else if(couleur==2){
+      if(chevaux[i-1+4].position>=0 && pion_sur_le_chemin(chevaux,couleur,des,i-1+4)!=1){
+	possible=1;
+      }
+    }
+    else if(couleur==3){
+      if(chevaux[i-1+8].position>=0 && pion_sur_le_chemin(chevaux,couleur,des,i-1+8)!=1){
+	possible=1;
+      }
+    }
+    else{
+      if(chevaux[i-1+12].position>=0 && pion_sur_le_chemin(chevaux,couleur,des,i-1+12)!=1){
+	possible=1;
+      }
+    }
+  }
+   return possible;
+}
+
+
+int sorti_possible(int couleur, chevaux chevaux[]){
+  int possible=0;
+  for(int i=1; i<=4;i++){
+    if(couleur==1){
+      if(chevaux[i-1].position<0){
+	possible=1;
+      }
+    }
+    else if(couleur==2){
+      if(chevaux[i-1+4].position<0){
+	possible=1;
+      }
+    }
+    else if(couleur==3){
+      if(chevaux[i-1+8].position<0){
+	possible=1;
+      }
+    }
+    else{
+      if(chevaux[i-1+12].position<0){
+	possible=1;
+      }
+    }
+  }
+  return possible;
+}
+
+
+int verification_fin(chevaux chevaux[], int couleur){
+  int verif=0;
+  if(couleur==1){
+    if(chevaux[0].position==59 || chevaux[1].position==59 || chevaux[2].position==59 || chevaux[3].position==59){
+      if(chevaux[0].position==60 || chevaux[1].position==60 || chevaux[2].position==60 || chevaux[3].position==60){
+	if(chevaux[0].position==61 || chevaux[1].position==61 || chevaux[2].position==61 || chevaux[3].position==61){
+	  if(chevaux[0].position==62 || chevaux[1].position==62 || chevaux[2].position==62 || chevaux[3].position==62){
+	    verif=1;
+	  }
+	}
+      }
+    }
+  }
+  else if(couleur==2){
+    if(chevaux[4].position==65 || chevaux[5].position==65 || chevaux[6].position==65 || chevaux[7].position==65){
+      if(chevaux[4].position==66 || chevaux[5].position==66 || chevaux[6].position==66 || chevaux[7].position==66){
+	if(chevaux[4].position==67 || chevaux[5].position==67 || chevaux[6].position==67 || chevaux[7].position==67){
+	  if(chevaux[4].position==68 || chevaux[5].position==68 || chevaux[6].position==68 || chevaux[7].position==68){
+	    verif=1;
+	  }
+	}
+      }
+    }
+  }
+  else if(couleur==3){
+    if(chevaux[8].position==71 || chevaux[9].position==71 || chevaux[10].position==71 || chevaux[11].position==71){
+      if(chevaux[8].position==72 || chevaux[9].position==72 || chevaux[10].position==72 || chevaux[11].position==72){
+	if(chevaux[8].position==73 || chevaux[9].position==73 || chevaux[10].position==73 || chevaux[11].position==73){
+	  if(chevaux[8].position==74 || chevaux[9].position==74 || chevaux[10].position==74 || chevaux[11].position==74){
+	    verif=1;
+	  }
+	}
+      }
+    }
+  }
+  else{
+    if(chevaux[12].position==77 || chevaux[13].position==77 || chevaux[14].position==77 || chevaux[15].position==77){
+      if(chevaux[12].position==78 || chevaux[13].position==78 || chevaux[14].position==78 || chevaux[15].position==78){
+	if(chevaux[12].position==79 || chevaux[13].position==79 || chevaux[14].position==79 || chevaux[15].position==79){
+	  if(chevaux[12].position==80 || chevaux[13].position==80 || chevaux[14].position==80 || chevaux[15].position==80){
+	    verif=1;
+	  }
+	}
+      }
+    }
+  }
+  return verif;
+}
+
+
+int verif_escalier(chevaux chevaux[],int joueur, int pion, int des){
+  int stop=0;
+  for(int i=chevaux[pion].position; i<=(chevaux[pion].position+des); i++){
+    if(joueur==1){
+      if(i%56==0){
+	chevaux[pion].position=0;
+	stop=1;
+      }
+    }
+    else if(joueur==2){
+      if(i%56==14){
+	chevaux[pion].position=14;
+	stop=1;
+
+      }
+    }
+    else if(joueur==3){
+      if(i%56==28){
+	chevaux[pion].position=28;
+	stop=1;
+      }
+    }
+    else{
+      if(i%56==42){
+	chevaux[pion].position=42;
+	stop=1;
+      }
+    }
+  }
+
+  if(chevaux[pion].position>=57 && chevaux[pion].position<=80){
+    stop=1;
+  }
+  return stop;
+}
+
+
+int pion_sur_le_chemin(chevaux chevaux[],int joueur, int des, int pion){
+  int impossible=0;
+  for(int i=chevaux[pion].position+1; i<(chevaux[pion].position+des); i++){
+    for(int j=0; j<16; j++){
+      if(i%56==chevaux[j].position && chevaux[pion].couleur!=chevaux[j].couleur){
+	impossible=1;
+      }
+    }
+  }
+  return impossible;
+}
+
+
+int pion_sur_le_chemin_echelle(chevaux chevaux[],int joueur,int pion){
+  int impossible=0;
+    for(int j=0; j<16; j++){
+      if((chevaux[pion].position+1)%56==chevaux[j].position%56){
+	impossible=1;
+      }
+    } 
+    return impossible;
+}

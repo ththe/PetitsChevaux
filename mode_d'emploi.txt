@@ -1,0 +1,2 @@
+Pour lancer la compilation du programme il faut écrire « make » dans le terminal.
+Ensuite pour lancer le programme il faut écrire « ./petit_chevaux » dans le terminal
